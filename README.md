@@ -67,7 +67,9 @@ You don't have to create patched ROM files. The Mega EverDrive PRO has a built-i
 - The patch is applied only in the cartridge RAM when the game is loaded. The ROM file on the SD card stays unchanged.
 - The `.ips` file must be **in the same folder as the ROM file**, and its **file name must match the ROM file name**. For example, `Gunstar Heroes (E) [!].ips` next to `Gunstar Heroes (E) [!].bin`.
 
-The patch files in this repository are named after the original ROM plus "RetroBit timing fix", so rename them to match your ROM file before putting them next to it. The BIOS patches are the exception: the EverDrive loads the BIOS files from `MEGA/bios/` directly, so patch those files themselves.
+**Alternative: one patch folder, named by ROM ID.** With OS v26 (tested), patches can also go in `MEGA/syscore/ips/` on the SD card, named after the ROM ID: `<ROM ID>.ips`, e.g. `8A6DD9E9.ips` for Sonic the Hedgehog (JUE) [!]. This keeps the ROM folders free of `.ips` files. The ROM ID is shown in the EverDrive's **Rom Info** menu, and it's the CRC32 of the first 128 KB of the ROM file. Different revisions of a game can share the same first 128 KB and therefore the same ID, so use a same-name patch for those. To calculate the ID on a PC, for example with Python: `python3 -c "import zlib,sys;print('%08X'%zlib.crc32(open(sys.argv[1],'rb').read()[:0x20000]))" game.bin`. The four patches already in that folder are the EverDrive's own; leave them alone. (The `ips-std` and `ips-msu` folders mentioned in older EverDrive changelogs are not read by OS v26.)
+
+The patch files in this repository are named after the original ROM plus "RetroBit timing fix", so rename them to match your ROM file (or its ROM ID) before using them. The BIOS patches are the exception: the EverDrive loads the BIOS files from `MEGA/bios/` directly, so patch those files themselves.
 
 ## Tested, no issues found
 
