@@ -1,24 +1,110 @@
-These are fixes for the 9-pin version of the RetroBit controller ([Genesis](https://retro-bit.com/controllers/genesis/#console) or [Mega Drive](https://retro-bit.com/controllers/mega-drive/#console))
+These are fixes for the 9-pin version of the RetroBit controller ([Genesis](https://retro-bit.com/controllers/genesis/#console) or [Mega Drive](https://retro-bit.com/controllers/mega-drive/#console)).
 
-*Fixed:* 
-- Lost Vikings: Fixes an issue where the game doesn't register the signal sent from the C-button as a button press
-- Phantom 2040: Fixes the controller layout. With this patch, use MODE instead of Start, as the RetroBit start key will not work.
+All patches have been tested on real hardware (Mega Drive with a Mega EverDrive PRO).
 
-*Tested, no issues found:*
+## Fixed
+
+| Game | What the patch fixes |
+|---|---|
+| Lost Vikings | The game doesn't register the C button. |
+| Phantom 2040 | C (jump) and Start don't work, so you can't reach the pause menu to set punch on A. With this patch, **use MODE instead of Start**, as the RetroBit Start key is unreliable. |
+| Mega-CD / Sega CD BIOS | The BIOS screen needs Start + C to get past. With this patch, **MODE works as Start**. |
+| NHL '94 (Sega CD) | "Press Start" screens sometimes need Start + C. With this patch, **MODE works as Start**. Note: the patch removes support for EA's 4 Way Play (4-player) adapter. |
+
+## Patch files
+
+Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacking.net/utilities/1040/) or [Rom Patcher JS](https://www.marcrobledo.com/RomPatcher.js/). They only work on the exact files below. Check the CRC32 of your file before patching.
+
+| Patch | Apply to | Size | CRC32 |
+|---|---|---|---|
+| `Lost Vikings RetroBit C fix.ips` | Lost Vikings, The (Europe) (En,Fr,De) | 1 MB | `1F14EFC6` |
+| `Phantom 2040 (4) [!] RetroBit fix.ips` | Phantom 2040 (USA) | 2 MB | `FB36E1F3` |
+| `Phantom 2040 (8) RetroBit fix.ips` | Phantom 2040 (Europe) | 2 MB | `B024882E` |
+| `mcd-eu BIOS RetroBit fix.ips` | Mega-CD (Europe) Model 1 BIOS v1.00 | 128 KB | `529AC15A` |
+| `mcd-us BIOS RetroBit fix.ips` | Sega CD (USA) Model 1 BIOS v1.10 | 128 KB | `C6D10268` |
+| `mcd-jp BIOS RetroBit fix.ips` | Mega-CD (Japan) Model 1 BIOS v1.00p | 128 KB | `9D2DA8F2` |
+| `NHL '94 (USA) (Track 01) RetroBit fix.ips` | `NHL '94 (USA) (Track 01).bin` from the cue/bin set | 209,363,280 bytes | `BB13C98D` |
+
+- **BIOS:** on the Mega EverDrive PRO, the patched files replace `mcd-eu.BIN`, `mcd-us.BIN` and `mcd-jp.BIN` in `MEGA/bios/` on the SD card. Keep a backup of the originals.
+- **NHL '94:** patch only Track 01 and keep the other tracks and the `.cue` file as they are. The patch also updates the CD sector checksums (EDC/ECC) for the changed sectors.
+
+## Tested, no issues found
+
 * Mega Drive
-  - Garfield Caught in the Act
+  - Garfield: Caught in the Act
   - Golden Axe 2
-  - the Jungle Book
+  - The Jungle Book
+  - Son of Chuck (Genesis US and Mega Drive EU)
   - Streets of Rage 3
   - Terminator 2: The Arcade Game
   - Tänzer (homebrew)
-  - Venom/SpiderMan: Separation Anxiety
-  - Zombies / Zombies Ate my Neighboors
-
-
-*Not tested yet:*
+  - Venom/Spider-Man: Separation Anxiety
+  - Zombies / Zombies Ate My Neighbors
 * Sega CD
-  - JaguarXJ220
-  - NHL 94
-  - Son of Chuck Rock
-  - Wolfchild
+  - Jaguar XJ220
+  - Wolfchild (EU and JP)
+  - Son of Chuck (EU). The US disc crashes, but that is not related to the controller.
+
+## Not tested yet
+
+* Mega Drive
+  - Wolf Child
+* 32X
+  - WWF Raw (no 32X available for testing)
+
+## Technical details
+
+### How a Mega Drive controller is read
+
+The controller port has a select line called **TH**. The console sets TH high or low and then reads the port, which returns one byte. A 0 bit means the button is pressed:
+
+| TH | Bit 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+|---|---|---|---|---|---|---|---|---|
+| high | – | TH (1) | **C** | B | Right | Left | Down | Up |
+| low | – | TH (0) | **Start** | A | 0 | 0 | Down | Up |
+
+A 6-button controller counts how many times TH has been toggled. When a game toggles TH quickly, the 3rd and 4th TH-low reads and the 4th TH-high read return extra information. The pad resets the count if TH is left alone for about 1.5 ms:
+
+| Read | TH high (C B ...) | TH low (Start A ...) |
+|---|---|---|
+| 1 | C B R L D U | Start A 0 0 D U |
+| 2 | C B R L D U | Start A 0 0 D U |
+| 3 | C B R L D U | Start A **0 0 0 0** ← "I'm a 6-button pad" |
+| 4 | C B **MODE X Y Z** | Start A 1 1 1 1 |
+
+On every read, bit 5 is C when TH is high and Start when TH is low. Games use different parts of this sequence. Some read only the first pair, some read all four, and some compare reads to check that the data is consistent.
+
+### What the RetroBit does wrong
+
+I captured the raw port reads with a homebrew input tester and found two separate problems.
+
+**1. C is only reported on the first TH-high read.** With C held, a working controller reports C in every TH-high read. The RetroBit only reports it on the first one:
+
+```
+                 working pad   RetroBit
+TH high, read 1  01011111      01011111   <- C pressed (bit 5 = 0)
+TH high, read 2  01011111      01111111   <- RetroBit: C released
+TH high, read 3  01011111      01111111
+TH high, read 4  01011111      01111111
+```
+
+**2. Start flickers.** With Start held, the RetroBit switches Start on and off. When it's on, it shows up in all TH-low reads at once. The tester's "held" and "newly pressed" indicators both flash. To a game this looks like Start being pressed over and over again:
+
+```
+                 working pad              RetroBit
+TH low, read 1   steady                   00110011 <-> 00010011
+TH low, read 3   steady                   00110000 <-> 00010000
+```
+
+With C also held, Start registers much more reliably, which is why "Start + C" works as a workaround in several games. MODE, X, Y and Z are read from the 4th TH-high read, and they work fine.
+
+### How each game is affected, and what the patches do
+
+- **Lost Vikings:** detects the 6-button pad, then takes C, B and the D-pad from a later TH-high read, where the RetroBit never reports C. The patch also saves the first TH-high read and merges the two, so a button counts as pressed if either read shows it.
+- **Phantom 2040:** reads all four pairs each frame. If pair 1 and pair 2 differ, it throws the whole frame away and reports nothing pressed. Holding C on the RetroBit made pair 1 and pair 2 differ, so every input disappeared for as long as C was held. If you were moving, this looked like a double-tap and toggled running. The patch:
+  - ignores bit 5 (C/Start) in that comparison,
+  - counts C and Start as pressed if they show up in any of the reads,
+  - keeps Start held for 15 frames after it was last seen, to smooth over the flicker,
+  - maps MODE to Start.
+- **Mega-CD BIOS and NHL '94:** read the pad as a 3-button controller, so they only ever see the flickering Start, and MODE isn't read at all. The patches add the extra TH toggles of a 6-button read. Then MODE, from the 4th TH-high read, counts as Start, and Start is also accepted from later TH-low reads. With a 3-button controller connected, the patches check for the "6-button pad" signature first, so Right is never mistaken for MODE.
+  - NHL '94 had no free space in its code. The new controller routine replaces the routine for EA's 4 Way Play adapter, which is why the patched game doesn't support that adapter.
