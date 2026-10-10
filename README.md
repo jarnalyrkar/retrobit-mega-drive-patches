@@ -55,13 +55,12 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
 
 ### Using the patches with the Mega EverDrive PRO's IPS auto-patcher
 
-You don't have to create patched ROM files. Since OS v4.01, the Mega EverDrive PRO has a built-in IPS auto-patcher ([release notes, via RetroRGB](https://retrorgb.com/mega-everdrive-pro-firmware-update.html)):
+You don't have to create patched ROM files. The Mega EverDrive PRO has a built-in IPS auto-patcher (OS v4.01 and later). From the EverDrive manual:
 
-- The patch is applied in the cart's RAM when the game is loaded. The ROM file on the SD card stays unchanged.
-- Patches go in an `ips-std` folder (or `ips-msu` for MSU-MD games that run together with a CD). Check the EverDrive manual for where that folder goes on your SD card.
-- A patch is matched to a game either by **ROM ID**, shown in the EverDrive's *Rom Info* menu, or by giving the `.ips` file **the same name as the ROM**. For example, `Gunstar Heroes (E) [!].ips` for `Gunstar Heroes (E) [!].bin`.
+- The patch is applied only in the cartridge RAM when the game is loaded. The ROM file on the SD card stays unchanged.
+- The `.ips` file must be **in the same folder as the ROM file**, and its **file name must match the ROM file name**. For example, `Gunstar Heroes (E) [!].ips` next to `Gunstar Heroes (E) [!].bin`.
 
-The patch files in this repository are named after the original ROM plus "RetroBit timing fix", so rename them to the ROM's name (or its ROM ID) for the auto-patcher. The BIOS patches are the exception: the EverDrive loads the BIOS files from `MEGA/bios/` directly, so patch those files themselves.
+The patch files in this repository are named after the original ROM plus "RetroBit timing fix", so rename them to match your ROM file before putting them next to it. The BIOS patches are the exception: the EverDrive loads the BIOS files from `MEGA/bios/` directly, so patch those files themselves.
 
 ## Tested, no issues found
 
