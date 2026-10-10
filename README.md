@@ -1,4 +1,4 @@
-These are fixes for the 9-pin version of the RetroBit controller ([Genesis](https://retro-bit.com/controllers/genesis/#console) or [Mega Drive](https://retro-bit.com/controllers/mega-drive/#console)
+These are fixes for the 9-pin version of the RetroBit controller ([Genesis](https://retro-bit.com/controllers/genesis/#console) or [Mega Drive](https://retro-bit.com/controllers/mega-drive/#console))
 
 *Fixed:* 
 - Lost Vikings: Fixes an issue where the game doesn't register the signal sent from the C-button as a button press
