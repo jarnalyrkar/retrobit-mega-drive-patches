@@ -14,8 +14,8 @@ The controller tested here has no model number on the controller itself. The box
 |---|---|
 | Lost Vikings | C doesn't work, and Start only works together with C. |
 | Phantom 2040 | C (jump) and Start don't work, so you can't reach the pause menu to set punch on A. |
-| Mega-CD / Sega CD BIOS | The BIOS screen needs Start + C to get past. With this patch, **MODE works as Start**. |
-| NHL '94 (Sega CD) | "Press Start" screens sometimes need Start + C. With this patch, **MODE works as Start**. Note: the patch removes support for EA's 4 Way Play (4-player) adapter. |
+| Mega-CD / Sega CD BIOS | The BIOS screen needs Start + C to get past. |
+| NHL '94 (Sega CD) | "Press Start" screens sometimes need Start + C. |
 | Sonic the Hedgehog 2 | C doesn't work, and Start pauses and unpauses on its own. |
 | Sonic the Hedgehog 3 | Same as Sonic 2. |
 | Gunstar Heroes | C doesn't work. |
@@ -23,7 +23,7 @@ The controller tested here has no model number on the controller itself. The box
 | Mortal Kombat | The controller isn't recognised, so every button does a high kick and Start (block) only works together with C. With this patch, all six buttons work as on an official 6-button pad. |
 | NBA Jam / NBA Jam Tournament Edition | You can't start a game (Start and Start + C don't work), and C (pass) doesn't work. |
 
-The patches for Lost Vikings, Phantom 2040 and the games listed after NHL '94 are "timing fixes", which make the game wait long enough for the RetroBit to respond. See [The underlying cause](#the-underlying-cause-the-retrobit-responds-too-slowly-to-th).
+All patches are "timing fixes", which make the game wait long enough for the RetroBit to respond. See [The underlying cause](#the-underlying-cause-the-retrobit-responds-too-slowly-to-th).
 
 ## Patch files
 
@@ -34,10 +34,10 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
 | `Lost Vikings, The (Europe) (En,Fr,De) RetroBit timing fix.ips` | Lost Vikings, The (Europe) (En,Fr,De) | 1 MB | `1F14EFC6` |
 | `Phantom 2040 (4) [!] RetroBit timing fix.ips` | Phantom 2040 (USA) | 2 MB | `FB36E1F3` |
 | `Phantom 2040 (8) RetroBit timing fix.ips` | Phantom 2040 (Europe) | 2 MB | `B024882E` |
-| `mcd-eu BIOS RetroBit fix.ips` | Mega-CD (Europe) Model 1 BIOS v1.00 | 128 KB | `529AC15A` |
-| `mcd-us BIOS RetroBit fix.ips` | Sega CD (USA) Model 1 BIOS v1.10 | 128 KB | `C6D10268` |
-| `mcd-jp BIOS RetroBit fix.ips` | Mega-CD (Japan) Model 1 BIOS v1.00p | 128 KB | `9D2DA8F2` |
-| `NHL '94 (USA) (Track 01) RetroBit fix.ips` | `NHL '94 (USA) (Track 01).bin` from the cue/bin set | 209,363,280 bytes | `BB13C98D` |
+| `mcd-eu BIOS RetroBit timing fix.ips` | Mega-CD (Europe) Model 1 BIOS v1.00 | 128 KB | `529AC15A` |
+| `mcd-us BIOS RetroBit timing fix.ips` | Sega CD (USA) Model 1 BIOS v1.10 | 128 KB | `C6D10268` |
+| `mcd-jp BIOS RetroBit timing fix.ips` | Mega-CD (Japan) Model 1 BIOS v1.00p | 128 KB | `9D2DA8F2` |
+| `NHL '94 (USA) (Track 01) RetroBit timing fix.ips` | `NHL '94 (USA) (Track 01).bin` from the cue/bin set | 209,363,280 bytes | `BB13C98D` |
 | `Sonic the Hedgehog 2 (JUE) [!] RetroBit timing fix.ips` | Sonic the Hedgehog 2 (World) | 1 MB | `7B905383` |
 | `Sonic the Hedgehog 3 (U) [!] RetroBit timing fix.ips` | Sonic the Hedgehog 3 (USA) | 2 MB | `9BC192CE` |
 | `Sonic the Hedgehog 3 (E) [converted from SMD] RetroBit timing fix.ips` | Sonic the Hedgehog 3 (Europe), plain ROM format (see below) | 2 MB | `6A632503` |
@@ -159,8 +159,8 @@ So the RetroBit needs somewhere between about 1 and 2 µs after a TH change befo
   - Sonic 2 and 3 have no free space, so their controller routine is rearranged in place instead. It reads the TH-high half first, while TH is still idle and valid, then switches TH low and does its bit-shuffling while the pad settles.
   - Mortal Kombat's 6-button detection used to fail with the RetroBit, so the game didn't recognise the controller and every button did a high kick. Both the detection and the 6-button reader are fixed.
   - There is also a separate [Mortal Kombat Controller Fix by BillyTime! Games](https://romhackplaza.org/romhacks/mortal-kombat-controller-fix-genesis/) for third-party 6-button pads (revision 1.1). It hasn't been tested with the RetroBit here.
-- **Mega-CD BIOS and NHL '94:** read the pad as a 3-button controller, so they only ever see the flickering Start, and MODE isn't read at all. The patches add the extra TH toggles of a 6-button read. Then MODE, from the 4th TH-high read, counts as Start, and Start is also accepted from later TH-low reads. With a 3-button controller connected, the patches check for the "6-button pad" signature first, so Right is never mistaken for MODE.
-  - NHL '94 had no free space in its code. The new controller routine replaces the routine for EA's 4 Way Play adapter, which is why the patched game doesn't support that adapter.
+- **Mega-CD BIOS and NHL '94:** read the pad as a 3-button controller, with only about 1 µs between changing TH and reading. Neither has usable free space, so the controller routine is rearranged in place, as in Sonic 2/3. It reads the idle TH-high half first, then switches TH low and waits about 4.5 µs before the second read, using a slow 2-byte shift instruction on a register that's overwritten afterwards. The routines stay the same size, so nothing else in the BIOS or game moves, and NHL '94 keeps its support for EA's 4 Way Play adapter.
+  - Earlier versions of these two patches added a 6-button read so MODE worked as Start. They are replaced by the timing fixes, which make the regular Start button work.
 
 ## A note for Retro-Bit
 
