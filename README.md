@@ -9,6 +9,7 @@ These are fixes for the 9-pin version of the RetroBit controller ([Genesis](http
   - Garfield Caught in the Act
   - Golden Axe 2
   - the Jungle Book
+  - Streets of Rage 3
   - Tänzer (homebrew)
   - Venom/SpiderMan: Separation Anxiety
   - Zombies / Zombies Ate my Neighboors
@@ -16,7 +17,6 @@ These are fixes for the 9-pin version of the RetroBit controller ([Genesis](http
 
 *Not tested yet:*
 * Sega Mega Drive
-  - Streets of Rage 3
   - T2: The Arcade Game
 * Sega CD
   - JaguarXJ220
