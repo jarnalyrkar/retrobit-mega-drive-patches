@@ -1,5 +1,7 @@
 These are fixes for the 9-pin version of the RetroBit controller ([Genesis](https://retro-bit.com/controllers/genesis/#console) or [Mega Drive](https://retro-bit.com/controllers/mega-drive/#console)).
 
+These are **software fixes for a hardware shortcoming in Retro-Bit's controller**. The controller responds too slowly to the console's select signal, so some games read C and Start before the controller has updated them (details in [Technical details](#technical-details)). The patches change the games so they wait long enough. They don't change the controller, and a controller that follows the original Sega timing doesn't need them.
+
 The controller tested here has no model number on the controller itself. The box says "SEGA MEGA DRIVE" (original logo), "6 Button Arcade Pad" and "BLACK for Mega Drive 1 and 2", and has **RET00123** printed above the barcode.
 
 **Retro-Bit:** see [A note for Retro-Bit](#a-note-for-retro-bit) at the bottom.
