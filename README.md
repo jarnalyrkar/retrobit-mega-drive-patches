@@ -14,6 +14,14 @@ All patches have been tested on real hardware (Mega Drive with a Mega EverDrive 
 | Phantom 2040 | C (jump) and Start don't work, so you can't reach the pause menu to set punch on A. With this patch, **use MODE instead of Start**, as the RetroBit Start key is unreliable. |
 | Mega-CD / Sega CD BIOS | The BIOS screen needs Start + C to get past. With this patch, **MODE works as Start**. |
 | NHL '94 (Sega CD) | "Press Start" screens sometimes need Start + C. With this patch, **MODE works as Start**. Note: the patch removes support for EA's 4 Way Play (4-player) adapter. |
+| Sonic the Hedgehog 2 | C doesn't work, and Start pauses and unpauses on its own. |
+| Sonic the Hedgehog 3 | Same as Sonic 2. |
+| Gunstar Heroes | C doesn't work. |
+| Alien Soldier | C doesn't work. |
+| Mortal Kombat | The controller isn't recognised, so every button does a high kick and Start (block) only works together with C. With this patch, all six buttons work as on an official 6-button pad. |
+| NBA Jam / NBA Jam Tournament Edition | You can't start a game (Start and Start + C don't work), and C (pass) doesn't work. |
+
+The patches for the games listed after NHL '94 are "timing fixes", which make the game wait long enough for the RetroBit to respond. See [The underlying cause](#the-underlying-cause-the-retrobit-responds-too-slowly-to-th).
 
 ## Patch files
 
@@ -28,8 +36,19 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
 | `mcd-us BIOS RetroBit fix.ips` | Sega CD (USA) Model 1 BIOS v1.10 | 128 KB | `C6D10268` |
 | `mcd-jp BIOS RetroBit fix.ips` | Mega-CD (Japan) Model 1 BIOS v1.00p | 128 KB | `9D2DA8F2` |
 | `NHL '94 (USA) (Track 01) RetroBit fix.ips` | `NHL '94 (USA) (Track 01).bin` from the cue/bin set | 209,363,280 bytes | `BB13C98D` |
+| `Sonic the Hedgehog 2 (JUE) [!] RetroBit timing fix.ips` | Sonic the Hedgehog 2 (World) | 1 MB | `7B905383` |
+| `Sonic the Hedgehog 3 (U) [!] RetroBit timing fix.ips` | Sonic the Hedgehog 3 (USA) | 2 MB | `9BC192CE` |
+| `Sonic the Hedgehog 3 (E) [converted from SMD] RetroBit timing fix.ips` | Sonic the Hedgehog 3 (Europe), plain ROM format (see below) | 2 MB | `6A632503` |
+| `Gunstar Heroes (E) [!] RetroBit timing fix.ips` | Gunstar Heroes (Europe) | 1 MB | `866ED9D0` |
+| `Gunstar Heroes (U) [!] RetroBit timing fix.ips` | Gunstar Heroes (USA) | 1 MB | `B813CF0D` |
+| `Alien Soldier (A) [!] RetroBit timing fix.ips` | Alien Soldier (Europe/Japan) | 2 MB | `0496E06C` |
+| `Mortal Kombat (JUE) (REV 00) [!] RetroBit timing fix.ips` | Mortal Kombat (World), revision 00 | 2 MB | `1AA3A207` |
+| `Mortal Kombat (JUE) (REV 01) (prototype) [c][!] RetroBit timing fix.ips` | Mortal Kombat (World), revision 01 (v1.1) | 2 MB | `33F19AB6` |
+| `NBA Jam (EU) (REV 01) [!] RetroBit timing fix.ips` | NBA Jam (USA/Europe), revision 01 | 2 MB | `EB8360E6` |
+| `NBA Jam Tournament Edition (JUE) (REV 01) [!] RetroBit timing fix.ips` | NBA Jam Tournament Edition (World), revision 01 | 3 MB | `6E25EBF0` |
 
 - **BIOS:** on the Mega EverDrive PRO, the patched files replace `mcd-eu.BIN`, `mcd-us.BIN` and `mcd-jp.BIN` in `MEGA/bios/` on the SD card. Keep a backup of the originals.
+- **Sonic the Hedgehog 3 (Europe):** some dumps are in the old interleaved SMD format, with a 512-byte header. The patch is for the plain (de-interleaved) ROM. Convert an SMD file first, for example with a ROM converter tool.
 - **NHL '94:** patch only Track 01 and keep the other tracks and the `.cue` file as they are. The patch also updates the CD sector checksums (EDC/ECC) for the changed sectors.
 
 ## Tested, no issues found
@@ -51,13 +70,6 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
 
 ## Not tested yet
 
-* Mega Drive
-  - Alien Soldier
-  - Gunstar Heroes
-  - Mortal Kombat. There is already a third-party fix for 6-button pads: [Mortal Kombat Controller Fix by BillyTime! Games](https://romhackplaza.org/romhacks/mortal-kombat-controller-fix-genesis/) (for revision 1.1 of the game).
-  - NBA Jam / NBA Jam Tournament Edition
-  - Sonic the Hedgehog 2
-  - Sonic the Hedgehog 3
 * 32X
   - WWF Raw (no 32X available for testing)
 
@@ -141,6 +153,11 @@ So the RetroBit needs somewhere between about 1 and 2 µs after a TH change befo
   - counts C and Start as pressed if they show up in any of the reads,
   - keeps Start held for 15 frames after it was last seen, to smooth over the flicker,
   - maps MODE to Start.
+- **Sonic 2/3, Gunstar Heroes, Alien Soldier, Mortal Kombat, NBA Jam and NBA Jam TE (timing fixes):** these games wait only about 0.5–1 µs between changing TH and reading the port. The patches make every such read wait about 4 µs:
+  - Where the ROM has unused space, each "write TH + next instruction" (6 bytes) is replaced with a call to a small routine. That routine does the same two instructions, waits, and returns.
+  - Sonic 2 and 3 have no free space, so their controller routine is rearranged in place instead. It reads the TH-high half first, while TH is still idle and valid, then switches TH low and does its bit-shuffling while the pad settles.
+  - Mortal Kombat's 6-button detection used to fail with the RetroBit, so the game didn't recognise the controller and every button did a high kick. Both the detection and the 6-button reader are fixed.
+  - There is also a separate [Mortal Kombat Controller Fix by BillyTime! Games](https://romhackplaza.org/romhacks/mortal-kombat-controller-fix-genesis/) for third-party 6-button pads (revision 1.1). It hasn't been tested with the RetroBit here.
 - **Mega-CD BIOS and NHL '94:** read the pad as a 3-button controller, so they only ever see the flickering Start, and MODE isn't read at all. The patches add the extra TH toggles of a 6-button read. Then MODE, from the 4th TH-high read, counts as Start, and Start is also accepted from later TH-low reads. With a 3-button controller connected, the patches check for the "6-button pad" signature first, so Right is never mistaken for MODE.
   - NHL '94 had no free space in its code. The new controller routine replaces the routine for EA's 4 Way Play adapter, which is why the patched game doesn't support that adapter.
 
