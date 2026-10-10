@@ -46,9 +46,6 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
   - Son of Chuck (EU). The US disc crashes, but that is not related to the controller.
 
 ## Not tested yet
-
-* Mega Drive
-  - Wolf Child
 * 32X
   - WWF Raw (no 32X available for testing)
 
