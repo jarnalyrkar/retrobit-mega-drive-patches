@@ -13,9 +13,10 @@ Notes:
 - Each patch is named exactly like the ROM it belongs to (GoodGen naming), so it can be used directly with the Mega EverDrive PRO's IPS auto-patcher: put it next to the ROM, with the same name. Check the CRC32 before patching.
 - Some patches leave a few reads alone, because no controller port address was found nearby. Those are noted in the table.
 - Three ROMs (D&D – Warriors of the Eternal Sun, Sonic the Hedgehog 3 (E) and Sub-Terrania) are SMD-interleaved in the romset. Their patches are for the plain (de-interleaved) ROM, and the CRC32 is for that version.
+- `NHL Hockey '94 (Europe) (Track 01) RetroBit timing fix.ips` is for the Sega CD game (Redump cue/bin, Track 01 CRC32 `09AC07A1`). It is the same in-place fix as the verified NHL '94 (USA) patch, at the same offsets, but hasn't been tested with the controller on the Europe disc.
 - If a patch causes a problem, please report it, and use the original ROM in the meantime. If you test one and it works, it can be moved to the verified list.
 
-## Patches (898)
+## Patches (897)
 
 | ROM | Size | CRC32 | Fix | Note |
 |---|---|---|---|---|
@@ -719,7 +720,6 @@ Notes:
 | Sonic Spinball (U) (alt music) [!] | 1 MB | `E9960371` | standard routine rearranged in place; 1 read(s) with a wait routine |  |
 | Sonic Spinball (U) [!] | 1 MB | `677206CB` | standard routine rearranged in place; 1 read(s) with a wait routine |  |
 | Sonic the Hedgehog  knux-in-sonic1 | 512 KB | `76537220` | standard routine rearranged in place |  |
-| Sonic the Hedgehog (JUE) [!] | 512 KB | `F9394E97` | standard routine rearranged in place |  |
 | Sonic the Hedgehog (JUE) [R-Jap][!] | 512 KB | `AFE05EEE` | standard routine rearranged in place |  |
 | Sonic the Hedgehog (UE) (MegaPlay Arcade Version) | 512 KB | `1B9C2254` | standard routine rearranged in place |  |
 | Sonic The Hedgehog - Knuckles In Sonic 1 (V0.02 by Hibernate) | 698536 bytes | `5EEE19D4` | standard routine rearranged in place |  |

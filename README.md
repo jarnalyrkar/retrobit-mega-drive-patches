@@ -16,6 +16,7 @@ The controller tested here has no model number on the controller itself. The box
 | Phantom 2040 | C (jump) and Start don't work, so you can't reach the pause menu to set punch on A. |
 | Mega-CD / Sega CD BIOS | The BIOS screen needs Start + C to get past. |
 | NHL '94 (Sega CD) | "Press Start" screens sometimes need Start + C. |
+| Sonic the Hedgehog | Timing fix for C and Start, as in Sonic 2. The patch also fixes the music speed on 50 Hz PAL consoles (see below). |
 | Sonic the Hedgehog 2 | C doesn't work, and Start pauses and unpauses on its own. |
 | Sonic the Hedgehog 3 | Same as Sonic 2. |
 | Gunstar Heroes | C doesn't work. |
@@ -38,6 +39,7 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
 | `mcd-us BIOS RetroBit timing fix.ips` | Sega CD (USA) Model 1 BIOS v1.10 | 128 KB | `C6D10268` |
 | `mcd-jp BIOS RetroBit timing fix.ips` | Mega-CD (Japan) Model 1 BIOS v1.00p | 128 KB | `9D2DA8F2` |
 | `NHL '94 (USA) (Track 01) RetroBit timing fix.ips` | `NHL '94 (USA) (Track 01).bin` from the cue/bin set | 209,363,280 bytes | `BB13C98D` |
+| `Sonic the Hedgehog (JUE) [!] RetroBit timing fix + PAL music.ips` | Sonic the Hedgehog (USA/Europe), revision 00 | 512 KB | `F9394E97` |
 | `Sonic the Hedgehog 2 (JUE) [!] RetroBit timing fix.ips` | Sonic the Hedgehog 2 (World) | 1 MB | `7B905383` |
 | `Sonic the Hedgehog 3 (U) [!] RetroBit timing fix.ips` | Sonic the Hedgehog 3 (USA) | 2 MB | `9BC192CE` |
 | `Sonic the Hedgehog 3 (E) [converted from SMD] RetroBit timing fix.ips` | Sonic the Hedgehog 3 (Europe), plain ROM format (see below) | 2 MB | `6A632503` |
@@ -51,11 +53,12 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
 
 - **BIOS:** on the Mega EverDrive PRO, the patched files replace `mcd-eu.BIN`, `mcd-us.BIN` and `mcd-jp.BIN` in `MEGA/bios/` on the SD card. Keep a backup of the originals.
 - **Sonic the Hedgehog 3 (Europe):** some dumps are in the old interleaved SMD format, with a 512-byte header. The patch is for the plain (de-interleaved) ROM. Convert an SMD file first, for example with a ROM converter tool.
+- **Sonic the Hedgehog, PAL music:** Sonic 1 was written for 60 Hz. On a 50 Hz PAL console the whole game runs at 50/60 speed, and its music plays about 17% too slow. Sonic 2 and 3 compensate for this in their sound driver, but Sonic 1 doesn't. The patch adds that compensation: on a PAL console (detected from the console's version register) the music update runs twice every fifth frame, so the music plays 60 updates per second at the correct tempo. Gameplay speed doesn't change, and on a 60 Hz console the game is unchanged. Tested on a PAL Mega Drive 2.
 - **NHL '94:** patch only Track 01 and keep the other tracks and the `.cue` file as they are. The patch also updates the CD sector checksums (EDC/ECC) for the changed sectors.
 
 ### Untested patches for many more games
 
-The folder [untested/](untested/) has **898 automatically generated timing patches** for other Mega Drive games, with a [table of all of them](untested/README.md). They were made by scanning the whole GoodGen Mega Drive romset for the same too-short controller reads, and they use the same two methods as the verified patches above. **They haven't been tested on hardware, but they should work.** Each patch is named exactly like its ROM, so it can be used directly with the EverDrive auto-patcher.
+The folder [untested/](untested/) has **897 automatically generated timing patches** for other Mega Drive games, plus the same timing fix for `NHL Hockey '94 (Europe) (Track 01).bin` (Sega CD, built like the verified USA patch), with a [table of all of them](untested/README.md). They were made by scanning the whole GoodGen Mega Drive romset for the same too-short controller reads, and they use the same two methods as the verified patches above. **They haven't been tested on hardware, but they should work.** Each patch is named exactly like its ROM, so it can be used directly with the EverDrive auto-patcher.
 
 ### Using the patches with the Mega EverDrive PRO's IPS auto-patcher
 
