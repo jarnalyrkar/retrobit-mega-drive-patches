@@ -1,5 +1,7 @@
 These are fixes for the 9-pin version of the RetroBit controller ([Genesis](https://retro-bit.com/controllers/genesis/#console) or [Mega Drive](https://retro-bit.com/controllers/mega-drive/#console)).
 
+The controller tested here has no model number on the controller itself. The box says "SEGA MEGA DRIVE" (original logo), "6 Button Arcade Pad" and "BLACK for Mega Drive 1 and 2", and has **RET00123** printed above the barcode.
+
 **Retro-Bit:** see [A note for Retro-Bit](#a-note-for-retro-bit) at the bottom.
 
 All patches have been tested on real hardware (Mega Drive with a Mega EverDrive PRO).
@@ -120,7 +122,7 @@ With C also held, Start registers much more reliably, which is why "Start + C" w
 
 ### The underlying cause: the RetroBit responds too slowly to TH
 
-C and Start share the same pin (pin 9, TR). The controller has to switch that pin between C and Start every time the console changes TH. To measure how fast the RetroBit does this, I wrote a small test ROM. It changes TH, waits a set number of NOP instructions, reads the port, and counts how often bit 5 reads as pressed. Each delay is tested 16 times:
+C and Start share the same pin (pin 9, TR). The controller has to switch that pin between C and Start every time the console changes TH. To measure how fast the RetroBit does this, I wrote a small test ROM ([probe/](probe/), with source). It changes TH, waits a set number of NOP instructions, reads the port, and counts how often bit 5 reads as pressed. Each delay is tested 16 times:
 
 | Delay after TH change | Holding C: TH-high reads 2–5 | Holding Start: TH-low reads 1–4 |
 |---|---|---|
@@ -146,7 +148,7 @@ So the RetroBit needs somewhere between about 1 and 2 µs after a TH change befo
 
 This is meant as friendly feedback. The controller is still on sale, and the problem can be fixed, so here's what I found and what would fix it in future production runs or firmware.
 
-**The problem:** after the console changes the TH select line (pin 7), the controller takes roughly 1–2 µs to update its outputs, in particular pin 9 (TR, the shared C/Start line). Many licensed games read the port only about 1 µs after changing TH. Those reads get stale values, so C doesn't register and Start flickers. Pressing C and Start together works around it, because then pin 9 is low in both TH states. The full measurements are in [The underlying cause](#the-underlying-cause-the-retrobit-responds-too-slowly-to-th) above.
+**The problem:** after the console changes the TH select line (pin 7), the controller (box code RET00123, "6 Button Arcade Pad") takes roughly 1–2 µs to update its outputs, in particular pin 9 (TR, the shared C/Start line). Many licensed games read the port only about 1 µs after changing TH. Those reads get stale values, so C doesn't register and Start flickers. Pressing C and Start together works around it, because then pin 9 is low in both TH states. The full measurements are in [The underlying cause](#the-underlying-cause-the-retrobit-responds-too-slowly-to-th) above.
 
 **Suggested fixes**, in order of robustness:
 
@@ -154,6 +156,6 @@ This is meant as friendly feedback. The controller is still on sale, and the pro
 2. **If the outputs must come from the microcontroller:** prepare both output states (TH high and TH low) in advance, and react to the TH edge with a pin-change or edge interrupt, or a very tight loop, so the port is rewritten within a few hundred nanoseconds. Avoid scanning buttons, debouncing or any other work between seeing the TH edge and updating the outputs.
 3. **6-button protocol:** keep the standard behaviour of resetting the TH counter after about 1.5 ms without TH changes, and make sure the TH-high and TH-low states in every cycle of the sequence are valid as quickly as on cycle 1.
 
-**How to test it:** read the port immediately after changing TH (0 NOPs), as well as after 1 and 2 NOPs, and check that C (TH high) and Start (TH low) read correctly on every read of the 6-button sequence. Sonic the Hedgehog 2 and 3, Gunstar Heroes, Alien Soldier, Mortal Kombat and NBA Jam are good real-game tests. With the current controller, all of them have problems with C, Start or both.
+**How to test it:** the [test ROM in probe/](probe/) does this. Read the port immediately after changing TH (0 NOPs), as well as after 1 and 2 NOPs, and check that C (TH high) and Start (TH low) read correctly on every read of the 6-button sequence. Sonic the Hedgehog 2 and 3, Gunstar Heroes, Alien Soldier, Mortal Kombat and NBA Jam are good real-game tests. With the current controller, all of them have problems with C, Start or both.
 
 If existing controllers can be updated, a firmware fix would help everyone who already owns one.
