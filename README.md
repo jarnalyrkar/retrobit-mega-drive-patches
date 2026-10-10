@@ -46,8 +46,29 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
   - Son of Chuck (EU). The US disc crashes, but that is not related to the controller.
 
 ## Not tested yet
+
+* Mega Drive
+  - Alien Soldier
+  - Gunstar Heroes
+  - Mortal Kombat. There is already a third-party fix for 6-button pads: [Mortal Kombat Controller Fix by BillyTime! Games](https://romhackplaza.org/romhacks/mortal-kombat-controller-fix-genesis/) (for revision 1.1 of the game).
+  - NBA Jam / NBA Jam Tournament Edition
+  - Sonic the Hedgehog 2
+  - Sonic the Hedgehog 3
 * 32X
   - WWF Raw (no 32X available for testing)
+
+## Community reports
+
+These Reddit threads report problems with the RetroBit controller in specific games. Together with other community reports, they are why these games were picked for testing:
+
+- [RetroBit controller not working with certain games](https://www.reddit.com/r/SEGAGENESIS/comments/lvnlp6/retrobit_controller_not_working_with_certain/)
+- [Warning: RetroBit's Genesis controllers and how an...](https://www.reddit.com/r/SEGAGENESIS/comments/17ae2ei/warning_retrobits_genesis_controllers_and_how_an/)
+- [My RetroBit Sega Genesis 6 button arcade pads...](https://www.reddit.com/r/SEGAGENESIS/comments/1j4om96/my_retrobit_sega_genesis_6_button_arcade_pads/): mentions Sonic 3.
+- [Are the RetroBit wired controllers good?](https://www.reddit.com/r/SEGAGENESIS/comments/16o6wib/are_the_retrobit_wired_controllers_good/): mentions Mortal Kombat.
+- [RetroBit Genesis 6 button controller PCB](https://www.reddit.com/r/SEGAGENESIS/comments/11ehbqp/retrobit_genesis_6_button_controller_pcb/): in Sonic 2, C behaves as if turbo were enabled. Jumps are short and repeat for as long as C is held, while A and B work normally. This matches the Start flicker described below, but on C.
+- [RetroBit Genesis controller](https://www.reddit.com/r/SEGAGENESIS/comments/1e2z8py/retrobit_genesis_controller/): mentions an NBA game with C button problems, plus Gunstar Heroes and Alien Soldier.
+
+Customer reviews on [Stone Age Gamer's page for the controller](https://stoneagegamer.com/6-button-controller-for-sega-genesis-officially-licensed.html) describe the same two faults: *"start button only works when it wants to and the C button doesn't seem to work at all in the normal 6 button mode. 3 button mode seems fine"*.
 
 ## Technical details
 
