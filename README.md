@@ -53,6 +53,10 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
 - **Sonic the Hedgehog 3 (Europe):** some dumps are in the old interleaved SMD format, with a 512-byte header. The patch is for the plain (de-interleaved) ROM. Convert an SMD file first, for example with a ROM converter tool.
 - **NHL '94:** patch only Track 01 and keep the other tracks and the `.cue` file as they are. The patch also updates the CD sector checksums (EDC/ECC) for the changed sectors.
 
+### Untested patches for many more games
+
+The folder [untested/](untested/) has **898 automatically generated timing patches** for other Mega Drive games, with a [table of all of them](untested/README.md). They were made by scanning the whole GoodGen Mega Drive romset for the same too-short controller reads, and they use the same two methods as the verified patches above. **They haven't been tested on hardware, but they should work.** Each patch is named exactly like its ROM, so it can be used directly with the EverDrive auto-patcher.
+
 ### Using the patches with the Mega EverDrive PRO's IPS auto-patcher
 
 You don't have to create patched ROM files. The Mega EverDrive PRO has a built-in IPS auto-patcher (OS v4.01 and later). From the EverDrive manual:
