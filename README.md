@@ -53,6 +53,16 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
 - **Sonic the Hedgehog 3 (Europe):** some dumps are in the old interleaved SMD format, with a 512-byte header. The patch is for the plain (de-interleaved) ROM. Convert an SMD file first, for example with a ROM converter tool.
 - **NHL '94:** patch only Track 01 and keep the other tracks and the `.cue` file as they are. The patch also updates the CD sector checksums (EDC/ECC) for the changed sectors.
 
+### Using the patches with the Mega EverDrive PRO's IPS auto-patcher
+
+You don't have to create patched ROM files. Since OS v4.01, the Mega EverDrive PRO has a built-in IPS auto-patcher ([release notes, via RetroRGB](https://retrorgb.com/mega-everdrive-pro-firmware-update.html)):
+
+- The patch is applied in the cart's RAM when the game is loaded. The ROM file on the SD card stays unchanged.
+- Patches go in an `ips-std` folder (or `ips-msu` for MSU-MD games that run together with a CD). Check the EverDrive manual for where that folder goes on your SD card.
+- A patch is matched to a game either by **ROM ID**, shown in the EverDrive's *Rom Info* menu, or by giving the `.ips` file **the same name as the ROM**. For example, `Gunstar Heroes (E) [!].ips` for `Gunstar Heroes (E) [!].bin`.
+
+The patch files in this repository are named after the original ROM plus "RetroBit timing fix", so rename them to the ROM's name (or its ROM ID) for the auto-patcher. The BIOS patches are the exception: the EverDrive loads the BIOS files from `MEGA/bios/` directly, so patch those files themselves.
+
 ## Tested, no issues found
 
 These games showed no problems with the wired 6-button controller described at the top (box code RET00123). They have **not** been tested with other Retro-Bit controllers, such as the wireless version or the Big 6, which may behave differently and could still have problems in these games.
