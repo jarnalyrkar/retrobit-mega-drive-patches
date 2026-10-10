@@ -22,5 +22,3 @@ These are fixes for the 9-pin version of the RetroBit controller ([Genesis](http
   - NHL 94
   - Son of Chuck Rock
   - Wolfchild
-* 32X
-  - WWF Raw
