@@ -55,6 +55,8 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
 
 ## Tested, no issues found
 
+These games showed no problems with the wired 6-button controller described at the top (box code RET00123). They have **not** been tested with other Retro-Bit controllers, such as the wireless version or the Big 6, which may behave differently and could still have problems in these games.
+
 * Mega Drive
   - Garfield: Caught in the Act
   - Golden Axe 2
