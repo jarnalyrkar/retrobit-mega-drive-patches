@@ -4,19 +4,18 @@ These are fixes for the 9-pin version of the RetroBit controller ([Genesis](http
 - Lost Vikings: Fixes an issue where the game doesn't register the signal sent from the C-button as a button press
 - Phantom 2040: Fixes the controller layout. With this patch, use MODE instead of Start, as the RetroBit start key will not work.
 
-*Tested, but no issues found:*
+*Tested, no issues found:*
 * Mega Drive
-  - Garfield Caught in the Act: Not able to reproduce an issue
-  - Golden Axe 2: Not able to reproduce an issue
-  - the Jungle Book: Not able to reproduce an issue
-  - Tänzer (homebrew): Not able to reproduce an issue
-  - Zombies / Zombies Ate my Neighboors: Not able to reproduce an issue
-
+  - Garfield Caught in the Act
+  - Golden Axe 2
+  - the Jungle Book
+  - Tänzer (homebrew)
+  - Venom/SpiderMan: Separation Anxiety
+  - Zombies / Zombies Ate my Neighboors
 
 
 *Not tested yet:*
 * Sega Mega Drive
-  - Separation Anxiety
   - Streets of Rage 3
   - T2: The Arcade Game
 * Sega CD
