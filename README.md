@@ -10,14 +10,13 @@ These are fixes for the 9-pin version of the RetroBit controller ([Genesis](http
   - Golden Axe 2
   - the Jungle Book
   - Streets of Rage 3
+  - Terminator 2: The Arcade Game
   - Tänzer (homebrew)
   - Venom/SpiderMan: Separation Anxiety
   - Zombies / Zombies Ate my Neighboors
 
 
 *Not tested yet:*
-* Sega Mega Drive
-  - T2: The Arcade Game
 * Sega CD
   - JaguarXJ220
   - NHL 94
