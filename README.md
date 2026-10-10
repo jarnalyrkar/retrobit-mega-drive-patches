@@ -4,14 +4,14 @@ The controller tested here has no model number on the controller itself. The box
 
 **Retro-Bit:** see [A note for Retro-Bit](#a-note-for-retro-bit) at the bottom.
 
-All patches have been tested on real hardware (Mega Drive with a Mega EverDrive PRO).
+> **Disclaimer:** the analysis, the patches, the tools and the test ROM in this repository were coded by AI (Claude, by Anthropic), but tested on actual hardware. Every patch listed under "Fixed" was confirmed working on a real console (a Mega Drive with a Mega EverDrive PRO and the RetroBit controller described above) before being added. Use them at your own risk, and keep your original files.
 
 ## Fixed
 
 | Game | What the patch fixes |
 |---|---|
-| Lost Vikings | The game doesn't register the C button. |
-| Phantom 2040 | C (jump) and Start don't work, so you can't reach the pause menu to set punch on A. With this patch, **use MODE instead of Start**, as the RetroBit Start key is unreliable. |
+| Lost Vikings | C doesn't work, and Start only works together with C. |
+| Phantom 2040 | C (jump) and Start don't work, so you can't reach the pause menu to set punch on A. |
 | Mega-CD / Sega CD BIOS | The BIOS screen needs Start + C to get past. With this patch, **MODE works as Start**. |
 | NHL '94 (Sega CD) | "Press Start" screens sometimes need Start + C. With this patch, **MODE works as Start**. Note: the patch removes support for EA's 4 Way Play (4-player) adapter. |
 | Sonic the Hedgehog 2 | C doesn't work, and Start pauses and unpauses on its own. |
@@ -21,7 +21,7 @@ All patches have been tested on real hardware (Mega Drive with a Mega EverDrive 
 | Mortal Kombat | The controller isn't recognised, so every button does a high kick and Start (block) only works together with C. With this patch, all six buttons work as on an official 6-button pad. |
 | NBA Jam / NBA Jam Tournament Edition | You can't start a game (Start and Start + C don't work), and C (pass) doesn't work. |
 
-The patches for the games listed after NHL '94 are "timing fixes", which make the game wait long enough for the RetroBit to respond. See [The underlying cause](#the-underlying-cause-the-retrobit-responds-too-slowly-to-th).
+The patches for Lost Vikings, Phantom 2040 and the games listed after NHL '94 are "timing fixes", which make the game wait long enough for the RetroBit to respond. See [The underlying cause](#the-underlying-cause-the-retrobit-responds-too-slowly-to-th).
 
 ## Patch files
 
@@ -29,9 +29,9 @@ Apply the patches with any IPS patcher, e.g. [Floating IPS](https://www.romhacki
 
 | Patch | Apply to | Size | CRC32 |
 |---|---|---|---|
-| `Lost Vikings RetroBit C fix.ips` | Lost Vikings, The (Europe) (En,Fr,De) | 1 MB | `1F14EFC6` |
-| `Phantom 2040 (4) [!] RetroBit fix.ips` | Phantom 2040 (USA) | 2 MB | `FB36E1F3` |
-| `Phantom 2040 (8) RetroBit fix.ips` | Phantom 2040 (Europe) | 2 MB | `B024882E` |
+| `Lost Vikings, The (Europe) (En,Fr,De) RetroBit timing fix.ips` | Lost Vikings, The (Europe) (En,Fr,De) | 1 MB | `1F14EFC6` |
+| `Phantom 2040 (4) [!] RetroBit timing fix.ips` | Phantom 2040 (USA) | 2 MB | `FB36E1F3` |
+| `Phantom 2040 (8) RetroBit timing fix.ips` | Phantom 2040 (Europe) | 2 MB | `B024882E` |
 | `mcd-eu BIOS RetroBit fix.ips` | Mega-CD (Europe) Model 1 BIOS v1.00 | 128 KB | `529AC15A` |
 | `mcd-us BIOS RetroBit fix.ips` | Sega CD (USA) Model 1 BIOS v1.10 | 128 KB | `C6D10268` |
 | `mcd-jp BIOS RetroBit fix.ips` | Mega-CD (Japan) Model 1 BIOS v1.00p | 128 KB | `9D2DA8F2` |
@@ -147,13 +147,10 @@ So the RetroBit needs somewhere between about 1 and 2 µs after a TH change befo
 
 ### How each game is affected, and what the patches do
 
-- **Lost Vikings:** detects the 6-button pad, then takes C, B and the D-pad from a later TH-high read, where the RetroBit never reports C. The patch also saves the first TH-high read and merges the two, so a button counts as pressed if either read shows it.
-- **Phantom 2040:** reads all four pairs each frame. If pair 1 and pair 2 differ, it throws the whole frame away and reports nothing pressed. Holding C on the RetroBit made pair 1 and pair 2 differ, so every input disappeared for as long as C was held. If you were moving, this looked like a double-tap and toggled running. The patch:
-  - ignores bit 5 (C/Start) in that comparison,
-  - counts C and Start as pressed if they show up in any of the reads,
-  - keeps Start held for 15 frames after it was last seen, to smooth over the flicker,
-  - maps MODE to Start.
-- **Sonic 2/3, Gunstar Heroes, Alien Soldier, Mortal Kombat, NBA Jam and NBA Jam TE (timing fixes):** these games wait only about 0.5–1 µs between changing TH and reading the port. The patches make every such read wait about 4 µs:
+- **Lost Vikings:** detects the 6-button pad, then takes C, B and the D-pad from a later TH-high read, which comes only about 0.5 µs after a TH change. The RetroBit never reports C there, and Start is unreliable.
+- **Phantom 2040:** reads all four pairs each frame. If pair 1 and pair 2 differ, it throws the whole frame away and reports nothing pressed. Holding C on the RetroBit made pair 1 and pair 2 differ, so every input disappeared for as long as C was held. If you were moving, this looked like a double-tap and toggled running.
+- Both now use the same timing fix as the games below, applied to the original ROMs. Earlier versions of these two patches worked around the symptoms instead (merging reads, a Start hold, and MODE as Start in Phantom 2040). They are replaced by the timing fixes, which make the regular Start button work too.
+- **Lost Vikings, Phantom 2040, Sonic 2/3, Gunstar Heroes, Alien Soldier, Mortal Kombat, NBA Jam and NBA Jam TE (timing fixes):** these games wait only about 0.5–1 µs between changing TH and reading the port. The patches make every such read wait about 4 µs:
   - Where the ROM has unused space, each "write TH + next instruction" (6 bytes) is replaced with a call to a small routine. That routine does the same two instructions, waits, and returns.
   - Sonic 2 and 3 have no free space, so their controller routine is rearranged in place instead. It reads the TH-high half first, while TH is still idle and valid, then switches TH low and does its bit-shuffling while the pad settles.
   - Mortal Kombat's 6-button detection used to fail with the RetroBit, so the game didn't recognise the controller and every button did a high kick. Both the detection and the 6-button reader are fixed.
